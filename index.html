@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock Out Time</title>
+</head>
+
+<body>
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center">Clock Out Time Calculator</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form class="form-group text-center" id="form">
+                <label for="hours-working">How many hours are you working?</label>
+                <input name="hours-working" id="hours-working" type="number" value="40">
+                <label for="time-in">What time did you clock in from lunch?</label>
+                <input name="time-in" id="time-in" type="time">
+                <label for="hours-worked">How many hours are you currently at?</label>
+                <input name="hours-worked" id="hours-worked" type="number" step=".01">
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+    
+    <h1 class="text-center" id="clock-out-time">Clock out at: </h1>
+
+    <script>
+        $("#form").submit(() => {
+            event.preventDefault();
+            timeToMinutes = (time) => {
+                const a = time.split(':');
+                return (+a[0]) * 60 + (+a[1]);
+            };
+
+            minutesToTime = (m) => {
+                const seconds = m * 60;
+                const date = new Date(seconds * 1000);
+                var hours = date.getUTCHours();
+                var pm = false;
+                if (hours > 12) {
+                    hours = hours - 12;
+                    pm = true
+                }
+                const minutes = date.getUTCMinutes();
+
+                if (minutes === 0) {
+                    if (pm) {
+                        return (`${hours}:00pm`);
+                    } else {
+                        return (`${hours}:00am`);
+                    }
+
+                } else if (minutes < 10) {
+                    if (pm) {
+                        return (`${hours}:0${minutes}pm`);
+                    } else {
+                        return (`${hours}:0${minutes}am`);
+                    }
+                } else {
+                    if (pm) {
+                        return (`${hours}:${minutes}pm`);
+                    } else {
+                        return (`${hours}:${minutes}am`);
+                    }
+                    
+                };
+            }
+
+            const hoursWorking = $("#hours-working").val();
+            const timeIn = $("#time-in").val();
+            const hoursWorked = $("#hours-worked").val();
+
+            const timeInMinutes = timeToMinutes(timeIn);
+            const minutesWorking = hoursWorking * 60;
+            const minutesWorked = hoursWorked * 60;
+            const minutesLeft = minutesWorking - minutesWorked;
+            const minutesTotal = timeInMinutes + minutesLeft;
+
+            const clockOutTime = minutesToTime(minutesTotal);
+
+            $("#clock-out-time").text(`Clock out at: ${clockOutTime}`);
+        })
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+        integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
